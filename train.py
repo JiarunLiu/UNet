@@ -14,7 +14,7 @@ import argparse
 import numpy as np
 #from visdom import Visdom
 
-from dataset import EyeDataset
+from dataset import EyeDataset, WaterMarkData
 from utils import *
 from Unet import UNet
 
@@ -59,19 +59,8 @@ if __name__ == '__main__':
                                                  std=[0.5,0.5,0.5])
                             ])
     # # load data
-    # trainset    = CellDataset_new('data/membrane', train=True, transform=None)
-    # trainloader = torch.utils.data.DataLoader(trainset, batch_size=1,
-    #                                           shuffle=True, num_workers=0)
-    # testset     = CellDataset_new('data/membrane', train=False, transform=None)
-    # testloader  = torch.utils.data.DataLoader(testset, batch_size=1,
-    #                                           shuffle=False, num_workers=0)
-    # eye data set
-    trainset    = EyeDataset('data/eye_test', train=True, transform=None)
-    trainloader = torch.utils.data.DataLoader(trainset, batch_size=1,
-                                              shuffle=True, num_workers=0)
-#    testset     = EyeDataset('data/eye_test', train=False, transform=None)
-#    testloader  = torch.utils.data.DataLoader(testset, batch_size=1,
-#                                              shuffle=False, num_workers=0)
+    trainset = WaterMarkData('./data/train2017', './data/masks')
+    trainloader = torch.utils.data.DataLoader(trainset, batch_size=2, shuffle=True, num_workers=0)
 
     # ---------- init -----------
     print('Initializing...')
@@ -89,6 +78,7 @@ if __name__ == '__main__':
 #    criterion = torch.nn.CrossEntropyLoss()
 #    optimizer = torch.optim.SGD(unet.parameters(), lr=args.lr, momentum=0.99)
     optimizer = torch.optim.Adagrad(unet.parameters(), lr=args.lr)
+    # optimizer = torch.optim.adam(unet.parameters(), lr=args.lr)
     # trans to device
     criterion.to(device)
     # optimizer.to(device)

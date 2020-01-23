@@ -15,11 +15,10 @@ import numpy as np
 def format_time(begin_time, end_time):
     # return a tuple with (hour, minutes, secs)
     total_time = begin_time - end_time
-    hour    = total_time // 360
-    minutes = (total_time - (hour*360)) // 60
-    secs    = total_time % 60
-    time = (hour, minutes, secs)
-    return time
+    hour = total_time // 360
+    minutes = (total_time - (hour * 360)) // 60
+    secs = total_time % 60
+    return (hour, minutes, secs)
 
 def show_seg_result(image, label, seg_label):
     """show (image, label, ground_truth)"""
@@ -29,10 +28,10 @@ def show_seg_result(image, label, seg_label):
 
     nplabel = np.array((torchvision.utils.make_grid(label)))
     # nplabel /= 255  # normailze value
-    
+
     npseg_label = np.array(torchvision.utils.make_grid(seg_label.detach()))
     npseg_label = npseg_label > 0.5
-    npseg_label = np.uint8(npseg_label*255)
+    npseg_label = np.uint8(npseg_label * 255)
     # npseg_label /= 255  # normailze value
 
     # show image
@@ -43,8 +42,8 @@ def show_seg_result(image, label, seg_label):
     # use cv2
     img = cv2.fromarray(npimage)
     cv2.namedWindow("Image")
-    cv2.imshow("Image", img) 
-    cv2.waitKey (0)
+    cv2.imshow("Image", img)
+    cv2.waitKey(0)
 
     print('Ground truth: {}'.format(nplabel.shape))
     # # use plt
@@ -53,9 +52,9 @@ def show_seg_result(image, label, seg_label):
     # use cv2
     label = cv2.fromarray(nplabel)
     cv2.namedWindow("Ground_truth")
-    cv2.imshow("Ground_truth", label) 
-    cv2.waitKey (0)
-    
+    cv2.imshow("Ground_truth", label)
+    cv2.waitKey(0)
+
     print('Seg result: {}'.format(npseg_label.shape))
     # # use plt
     # plt.imshow(np.transpose(npseg_label, (1,2,0)), cmap='Accent')
@@ -63,8 +62,8 @@ def show_seg_result(image, label, seg_label):
     # use cv2
     seg_label = cv2.fromarray(npseg_label)
     cv2.namedWindow("Seg result")
-    cv2.imshow("Seg result", seg_label) 
-    cv2.waitKey (0)
+    cv2.imshow("Seg result", seg_label)
+    cv2.waitKey(0)
 
     cv2.destroyAllWindows()
     
@@ -99,10 +98,10 @@ def save_img(img, path, resize=False, img_shape=(50, 50)):
     if not os.path.exists(dirname):
         os.makedirs(dirname)
     # save image
-    img = np.array(torchvision.utils.make_grid(img).cpu())
-    img = img[0,:,:]
+    img = np.array(torchvision.utils.make_grid(img.detach()).cpu())
+    img = img[0, :, :]
     img = img > 0.5
-    img = PIL.Image.fromarray(np.uint8(img*255), mode='L')
+    img = PIL.Image.fromarray(np.uint8(img * 255), mode='L')
     if resize:
         img = img.resize(img_shape)
     img.save(path)
